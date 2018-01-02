@@ -382,12 +382,12 @@ ARM Macro Assembler    Page 6
               00000000 
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
-erwork --depend=..\obj\os_cpu_a.d -o..\obj\os_cpu_a.o -I"C:\Users\Administrator
-\Desktop\网络实验8 NETCONN_WEBServer实验\USER\RTE" -IC:\Keil_v5\ARM\PACK\Keil\S
-TM32F4xx_DFP\2.10.0 -IC:\Keil_v5\ARM\CMSIS\Include -IC:\Keil_v5\ARM\PACK\Keil\S
-TM32F4xx_DFP\2.10.0\Device\Include --predefine="__UVISION_VERSION SETA 514" --p
-redefine="STM32F407xx SETA 1" --list=..\obj\os_cpu_a.lst ..\UCOSIII\uCOS-III\Po
-rts\ARM-Cortex-M4\Generic\RealView\os_cpu_a.asm
+erwork --depend=..\obj\os_cpu_a.d -o..\obj\os_cpu_a.o -ID:\SOURCESTREE\Generalp
+late\USER\RTE -IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0 -IC:\Keil_v5\ARM\
+CMSIS\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include --
+predefine="__UVISION_VERSION SETA 514" --predefine="STM32F407xx SETA 1" --list=
+..\obj\os_cpu_a.lst ..\UCOSIII\uCOS-III\Ports\ARM-Cortex-M4\Generic\RealView\os
+_cpu_a.asm
 
 
 
