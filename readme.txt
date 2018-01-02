@@ -5,4 +5,8 @@
 
 注意：本实验使用了UCOSiii操作系统，如果没有插网线并且开启了DHCP的话就会等待很久！
 
+更新日志：
+2018.01.02   完成ucosiii+lwip的TCPServer+WEBServer的移植,修改数据包不定长度自计算
+
+
 
