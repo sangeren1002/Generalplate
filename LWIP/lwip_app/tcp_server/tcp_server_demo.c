@@ -55,10 +55,10 @@
 		u8 Reserved2;						//保留位
 		u8 Reserved3;						//保留位
 		u8 Reserved4;						//保留位
-		u8 Timestamp;							//时间戳
+		u8 Timestamp[2];							//时间戳
 		u8 CRCCheck[2];							//CRC校验
  }TCP_PACK;
-u8 TCP_PACK_BUFSIZE=56;
+//u8 TCP_PACK_BUFSIZE=56;
 TCP_PACK Tcp_Server_Recvbuf;
 TCP_PACK Tcp_Server_Transbuf;
 u8 tcp_server_recvbuf[TCP_SERVER_RX_BUFSIZE];	//TCP客户端接收数据缓冲区
@@ -87,7 +87,7 @@ static void tcp_server_thread(void *arg)
 	struct netconn *conn, *newconn;
 	static ip_addr_t ipaddr;
 	static u16_t 			port;
-	 
+	static u8 TCP_PACK_BUFSIZE = sizeof(Tcp_Server_Transbuf);
 	LWIP_UNUSED_ARG(arg);
 
 	conn = netconn_new(NETCONN_TCP);  //创建一个TCP链接
