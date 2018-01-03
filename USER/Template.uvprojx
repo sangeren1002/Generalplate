@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\STM32F4xx_StdPeriph_Driver\inc;..\USER;..\HARDWARE\KEY;..\HARDWARE\LCD;..\HARDWARE\ETHERNET;..\HARDWARE\TIMER;..\HARDWARE\LED;..\HARDWARE\SRAM;..\FWLIB\STM32F4x7_ETH_Driver\inc;..\MALLOC;..\USMART;..\LWIP;..\LWIP\arch;..\LWIP\lwip_header;..\LWIP\app\TCP_Client;..\LWIP\lwip_app\lwip_comm;..\LWIP\lwip-1.4.1\src\include;..\LWIP\lwip-1.4.1\src\include\ipv4;..\LWIP\lwip-1.4.1\src\include\lwip;..\LWIP\lwip-1.4.1\src\include\netif;..\UCOSIII\uC-CPU;..\UCOSIII\uC-LIB;..\UCOSIII\uCOS-III;..\UCOSIII\UCOS_BSP;..\UCOSIII\uCOS_CONFIG;..\UCOSIII\uCOS-III\Source;..\UCOSIII\uC-CPU\ARM-Cortex-M4\RealView;..\UCOSIII\uC-LIB\Ports\ARM-Cortex-M4\RealView;..\UCOSIII\uCOS-III\Ports\ARM-Cortex-M4\Generic\RealView;..\LWIP\lwip_app\web_server_demo;..\HARDWARE\ADC;..\HARDWARE\BEEP;..\HARDWARE\InterTemperate;..\HARDWARE\RTC;..\LWIP\lwip_app\tcp_server</IncludePath>
+              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\STM32F4xx_StdPeriph_Driver\inc;..\USER;..\HARDWARE\KEY;..\HARDWARE\LCD;..\HARDWARE\ETHERNET;..\HARDWARE\TIMER;..\HARDWARE\LED;..\HARDWARE\SRAM;..\FWLIB\STM32F4x7_ETH_Driver\inc;..\MALLOC;..\USMART;..\LWIP;..\LWIP\arch;..\LWIP\lwip_header;..\LWIP\app\TCP_Client;..\LWIP\lwip_app\lwip_comm;..\LWIP\lwip-1.4.1\src\include;..\LWIP\lwip-1.4.1\src\include\ipv4;..\LWIP\lwip-1.4.1\src\include\lwip;..\LWIP\lwip-1.4.1\src\include\netif;..\UCOSIII\uC-CPU;..\UCOSIII\uC-LIB;..\UCOSIII\uCOS-III;..\UCOSIII\UCOS_BSP;..\UCOSIII\uCOS_CONFIG;..\UCOSIII\uCOS-III\Source;..\UCOSIII\uC-CPU\ARM-Cortex-M4\RealView;..\UCOSIII\uC-LIB\Ports\ARM-Cortex-M4\RealView;..\UCOSIII\uCOS-III\Ports\ARM-Cortex-M4\Generic\RealView;..\LWIP\lwip_app\web_server_demo;..\HARDWARE\ADC;..\HARDWARE\BEEP;..\HARDWARE\InterTemperate;..\HARDWARE\RTC;..\LWIP\lwip_app\tcp_server;..\HARDWARE\RS485;..\HARDWARE\Motor;..\HARDWARE\BatteryManager;..\HARDWARE\ControlModel;..\HARDWARE\Encoder;..\HARDWARE\FallArrest;..\HARDWARE\Motor</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -477,6 +477,26 @@
               <FileName>rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\RTC\rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>rs485.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\RS485\rs485.c</FilePath>
+            </File>
+            <File>
+              <FileName>swervemotorcontrol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\Motor\swervemotorcontrol.c</FilePath>
+            </File>
+            <File>
+              <FileName>controlmodel.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\ControlModel\controlmodel.c</FilePath>
+            </File>
+            <File>
+              <FileName>check.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\ControlModel\check.c</FilePath>
             </File>
           </Files>
         </Group>

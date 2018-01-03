@@ -88,3 +88,4 @@
 ..\obj\main.o: ..\LWIP\lwip-1.4.1\src\include\lwip/err.h
 ..\obj\main.o: ..\LWIP\lwip-1.4.1\src\include\lwip/pbuf.h
 ..\obj\main.o: ..\LWIP\lwip_app\tcp_server\tcp_server_demo.h
+..\obj\main.o: ..\HARDWARE\RS485\rs485.h

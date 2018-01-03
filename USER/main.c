@@ -19,96 +19,93 @@
 #include "lwipopts.h"
 #include "httpd.h"
 #include "tcp_server_demo.h"
+#include "rs485.h"	
 
-//ALIENTEK Ì½Ë÷ÕßSTM32F407¿ª·¢°å
-//»ùÓÚNETCONN APIµÄWebServerÊµÑé
 
-//UCOSIIIÖĞÒÔÏÂÓÅÏÈ¼¶ÓÃ»§³ÌĞò²»ÄÜÊ¹ÓÃ£¬ALIENTEK
-//½«ÕâĞ©ÓÅÏÈ¼¶·ÖÅä¸øÁËUCOSIIIµÄ5¸öÏµÍ³ÄÚ²¿ÈÎÎñ
-//ÓÅÏÈ¼¶0£ºÖĞ¶Ï·şÎñ·şÎñ¹ÜÀíÈÎÎñ OS_IntQTask()
-//ÓÅÏÈ¼¶1£ºÊ±ÖÓ½ÚÅÄÈÎÎñ OS_TickTask()
-//ÓÅÏÈ¼¶2£º¶¨Ê±ÈÎÎñ OS_TmrTask()
-//ÓÅÏÈ¼¶OS_CFG_PRIO_MAX-2£ºÍ³¼ÆÈÎÎñ OS_StatTask()
-//ÓÅÏÈ¼¶OS_CFG_PRIO_MAX-1£º¿ÕÏĞÈÎÎñ OS_IdleTask()
+//UCOSIIIä¸­ä»¥ä¸‹ä¼˜å…ˆçº§ç”¨æˆ·ç¨‹åºä¸èƒ½ä½¿ç”¨
+//å°†è¿™äº›ä¼˜å…ˆçº§åˆ†é…ç»™UCOSIIIçš„5ä¸ªç³»ç»Ÿå†…éƒ¨ä»»åŠ¡
+//ä¼˜å…ˆçº§0ï¼šä¸­æ–­æœåŠ¡ç®¡ç†ä»»åŠ¡ OS_IntQTask()
+//ä¼˜å…ˆçº§1ï¼šæ—¶é’ŸèŠ‚æ‹ä»»åŠ¡ OS_TickTask()
+//ä¼˜å…ˆçº§2ï¼š å®šæ—¶ä»»åŠ¡ OS_TmrTask()
+//ä¼˜å…ˆçº§OS_CFG_PRIO_MAX-2ï¼šç»Ÿè®¡ä»»åŠ¡ OS_StatTask()
+//ä¼˜å…ˆçº§OS_CFG_PRIO_MAX-1ï¼šç©ºé—²ä»»åŠ¡ OS_IdleTask()
 
-//¼¼ÊõÖ§³Ö£ºwww.openedv.com
-//¹ãÖİÊĞĞÇÒíµç×Ó¿Æ¼¼ÓĞÏŞ¹«Ë¾
 
   
-//KEYÈÎÎñ
-//ÈÎÎñÓÅÏÈ¼¶
+//KEYä»»åŠ¡
+//ä»»åŠ¡ä¼˜å…ˆçº§
 #define KEY_TASK_PRIO		8
-//ÈÎÎñ¶ÑÕ»´óĞ¡
+//ä»»åŠ¡å †æ ˆå¤§å°
 #define KEY_STK_SIZE		128
-//ÈÎÎñ¿ØÖÆ¿é
+//ä»»åŠ¡æ§åˆ¶å—
 OS_TCB KeyTaskTCB;
-//ÈÎÎñ¶ÑÕ»
+//ä»»åŠ¡å †æ ˆ
 CPU_STK	KEY_TASK_STK[KEY_STK_SIZE];
-//ÈÎÎñº¯Êı
+//ä»»åŠ¡å‡½æ•°
 void key_task(void *pdata); 
-//LEDÈÎÎñ
-//ÈÎÎñÓÅÏÈ¼¶
+//LEDä»»åŠ¡
+//ä»»åŠ¡ä¼˜å…ˆçº§
 #define LED_TASK_PRIO		9
-//ÈÎÎñ¶ÑÕ»´óĞ¡
+//ä»»åŠ¡å †æ ˆå¤§å°
 #define LED_STK_SIZE		128
-//ÈÎÎñ¿ØÖÆ¿é
+//ä»»åŠ¡æ§åˆ¶å—
 OS_TCB LedTaskTCB;
-//ÈÎÎñ¶ÑÕ»
+//ä»»åŠ¡æ§å †æ ˆ
 CPU_STK	LED_TASK_STK[LED_STK_SIZE];
-//ÈÎÎñº¯Êı
+//ä»»åŠ¡å‡½æ•°
 void led_task(void *pdata);  
 
-//ÔÚLCDÉÏÏÔÊ¾µØÖ·ĞÅÏ¢ÈÎÎñ
-//ÈÎÎñÓÅÏÈ¼¶
+//åœ¨LCDä¸Šæ˜¾ç¤ºåœ°å€ä¿¡æ¯ä»»åŠ¡
+//ä»»åŠ¡ä¼˜å…ˆçº§
 #define DISPLAY_TASK_PRIO	10
-//ÈÎÎñ¶ÑÕ»´óĞ¡
+//ä»»åŠ¡å †æ ˆå¤§å°
 #define DISPLAY_STK_SIZE	128
-//ÈÎÎñ¿ØÖÆ¿é
+//ä»»åŠ¡æ§åˆ¶å—
 OS_TCB DisplayTaskTCB;
-//ÈÎÎñ¶ÑÕ»
+//ä»»åŠ¡æ§å †æ ˆ
 CPU_STK	DISPLAY_TASK_STK[DISPLAY_STK_SIZE];
-//ÈÎÎñº¯Êı
+//ä»»åŠ¡å‡½æ•°
 void display_task(void *pdata);
 
-//STARTÈÎÎñ
-//ÈÎÎñÓÅÏÈ¼¶
+//STARTä»»åŠ¡
+//ä»»åŠ¡ä¼˜å…ˆçº§
 #define START_TASK_PRIO		11
-//ÈÎÎñ¶ÑÕ»´óĞ¡
+//ä»»åŠ¡å †æ ˆå¤§å°
 #define START_STK_SIZE		128
-//ÈÎÎñ¶ÑÕ»
+//ä»»åŠ¡æ§åˆ¶å—
 OS_TCB StartTaskTCB;
-//ÈÎÎñ¶ÑÕ»
+//ä»»åŠ¡æ§å †æ ˆ
 CPU_STK START_TASK_STK[START_STK_SIZE];
-//ÈÎÎñº¯Êı
+//ä»»åŠ¡å‡½æ•°
 void start_task(void *pdata); 
 
-extern void Adc_Temperate_Init(void); //ÉùÃ÷Adc_Temperate_Initº¯Êı
+extern void Adc_Temperate_Init(void); //å£°æ˜Adc_Temperate_Initå‡½æ•°
 
-//ÔÚLCDÉÏÏÔÊ¾µØÖ·ĞÅÏ¢
-//mode:1 ÏÔÊ¾DHCP»ñÈ¡µ½µÄµØÖ·
-//	  ÆäËû ÏÔÊ¾¾²Ì¬µØÖ·
+//åœ¨LCDä¸Šæ˜¾ç¤ºåœ°å€ä¿¡æ¯
+//mode:1 		æ˜¾ç¤ºDHCPè·å–åˆ°çš„åœ°å€
+//	  å…¶ä»– 	æ˜¾ç¤ºé™æ€åœ°å€
 void show_address(u8 mode)
 {
 	u8 buf[30];
 	if(mode==2)
 	{
-		sprintf((char*)buf,"DHCP IP :%d.%d.%d.%d",lwipdev.ip[0],lwipdev.ip[1],lwipdev.ip[2],lwipdev.ip[3]);						//´òÓ¡¶¯Ì¬IPµØÖ·
+		sprintf((char*)buf,"DHCP IP :%d.%d.%d.%d",lwipdev.ip[0],lwipdev.ip[1],lwipdev.ip[2],lwipdev.ip[3]);						//æ‰“å°åŠ¨æ€IPåœ°å€
 		LCD_ShowString(30,130,210,16,16,buf); 
-		sprintf((char*)buf,"DHCP GW :%d.%d.%d.%d",lwipdev.gateway[0],lwipdev.gateway[1],lwipdev.gateway[2],lwipdev.gateway[3]);	//´òÓ¡Íø¹ØµØÖ·
+		sprintf((char*)buf,"DHCP GW :%d.%d.%d.%d",lwipdev.gateway[0],lwipdev.gateway[1],lwipdev.gateway[2],lwipdev.gateway[3]);	//æ‰“å°ç½‘å…³åœ°å€
 		LCD_ShowString(30,150,210,16,16,buf); 
-		sprintf((char*)buf,"NET MASK:%d.%d.%d.%d",lwipdev.netmask[0],lwipdev.netmask[1],lwipdev.netmask[2],lwipdev.netmask[3]);	//´òÓ¡×ÓÍøÑÚÂëµØÖ·
+		sprintf((char*)buf,"NET MASK:%d.%d.%d.%d",lwipdev.netmask[0],lwipdev.netmask[1],lwipdev.netmask[2],lwipdev.netmask[3]);	//æ‰“å°å­ç½‘æ©ç åœ°å€
 		LCD_ShowString(30,170,210,16,16,buf); 
-		LCD_ShowString(30,190,210,16,16,"Port:8088!");
+		LCD_ShowString(30,190,210,16,16,"Port:8088!");																																					//æ‰“å°ç«¯å£å·
 	}
 	else 
 	{
-		sprintf((char*)buf,"Static IP:%d.%d.%d.%d",lwipdev.ip[0],lwipdev.ip[1],lwipdev.ip[2],lwipdev.ip[3]);						//´òÓ¡¶¯Ì¬IPµØÖ·
+		sprintf((char*)buf,"Static IP:%d.%d.%d.%d",lwipdev.ip[0],lwipdev.ip[1],lwipdev.ip[2],lwipdev.ip[3]);						//æ‰“å°åŠ¨æ€IPåœ°å€
 		LCD_ShowString(30,130,210,16,16,buf); 
-		sprintf((char*)buf,"Static GW:%d.%d.%d.%d",lwipdev.gateway[0],lwipdev.gateway[1],lwipdev.gateway[2],lwipdev.gateway[3]);	//´òÓ¡Íø¹ØµØÖ·
+		sprintf((char*)buf,"Static GW:%d.%d.%d.%d",lwipdev.gateway[0],lwipdev.gateway[1],lwipdev.gateway[2],lwipdev.gateway[3]);	//æ‰“å°åŠ¨æ€IPåœ°å€
 		LCD_ShowString(30,150,210,16,16,buf); 
-		sprintf((char*)buf,"NET MASK:%d.%d.%d.%d",lwipdev.netmask[0],lwipdev.netmask[1],lwipdev.netmask[2],lwipdev.netmask[3]);	//´òÓ¡×ÓÍøÑÚÂëµØÖ·
+		sprintf((char*)buf,"NET MASK:%d.%d.%d.%d",lwipdev.netmask[0],lwipdev.netmask[1],lwipdev.netmask[2],lwipdev.netmask[3]);		//æ‰“å°å­ç½‘æ©ç åœ°å€
 		LCD_ShowString(30,170,210,16,16,buf); 
-		LCD_ShowString(30,190,210,16,16,"Port:8088!"); 
+		LCD_ShowString(30,190,210,16,16,"Port:8088!");  																																					//æ‰“å°ç«¯å£å· 
 	}	
 }
 
@@ -117,67 +114,67 @@ int main(void)
 	OS_ERR err;
 	CPU_SR_ALLOC();
 	
-	delay_init(168);       	//ÑÓÊ±³õÊ¼»¯
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	//ÖĞ¶Ï·Ö×éÅäÖÃ
-	uart_init(115200);    	//´®¿Ú²¨ÌØÂÊÉèÖÃ
-	usmart_dev.init(84); 	//³õÊ¼»¯USMART
-	LED_Init();  			//LED³õÊ¼»¯
-	KEY_Init();  			//°´¼ü³õÊ¼»¯
-	LCD_Init();  			//LCD³õÊ¼»¯
-    BEEP_Init(); 			//·äÃùÆ÷³õÊ¼»¯
-	RTC_Timer_Init();  		//RTC³õÊ¼»¯
-    Adc_Init();  			//ADC1_CH5³õÊ¼»¯
-	Adc_Temperate_Init(); //ÄÚ²¿ÎÂ¶È´«¸ĞÆ÷³õÊ¼»¯
-	FSMC_SRAM_Init();		//SRAM³õÊ¼»¯
+	delay_init(168);       	//å»¶æ—¶åˆå§‹åŒ–
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	//ä¸­æ–­åˆ†ç»„é…ç½®
+	uart_init(115200);    	//ä¸²å£1åˆå§‹åŒ–
+	usmart_dev.init(84); 	//åˆå§‹åŒ–USMART
+	LED_Init();  			//LEDåˆå§‹åŒ–
+	KEY_Init();  			//æŒ‰é”®åˆå§‹åŒ–
+	LCD_Init();  			//LCDåˆå§‹åŒ–
+    BEEP_Init(); 			//èœ‚é¸£å™¨åˆå§‹åŒ–
+    Adc_Init();  			//ADC1_CH5åˆå§‹åŒ–
+	RS485_Init(115200);		//RS485åˆå§‹åŒ– 115200æ³¢ç‰¹ç‡ä¼ è¾“è·ç¦»ä¸º500m
+	Adc_Temperate_Init(); //åˆå§‹åŒ–å†…éƒ¨æ¸©åº¦ä¼ æ„Ÿå™¨
+	FSMC_SRAM_Init();		//SRAMåˆå§‹åŒ–
 	
-	mymem_init(SRAMIN);  	//³õÊ¼»¯ÄÚ²¿ÄÚ´æ³Ø
-	mymem_init(SRAMEX);  	//³õÊ¼»¯Íâ²¿ÄÚ´æ³Ø
-	mymem_init(SRAMCCM); 	//³õÊ¼»¯CCMÄÚ´æ³Ø
+	mymem_init(SRAMIN);  	//åˆå§‹åŒ–å†…éƒ¨å†…å­˜æ± 
+	mymem_init(SRAMEX);  	//åˆå§‹åŒ–å¤–éƒ¨å†…å­˜æ± 
+	mymem_init(SRAMCCM); 	//åˆå§‹åŒ–å†…éƒ¨å†…å­˜æ± 
 	
-	POINT_COLOR = RED; 		//ºìÉ«×ÖÌå
+	POINT_COLOR = RED; 		//çº¢è‰²å­—ä½“
 	LCD_ShowString(30,30,200,20,16,"Explorer STM32F4");
 	LCD_ShowString(30,50,200,20,16,"WebServer Test");
 	LCD_ShowString(30,70,200,20,16,"ATOM@ALIENTEK");
 	LCD_ShowString(30,90,200,20,16,"2015/8/24");
-	POINT_COLOR = BLUE; 	//À¶É«×ÖÌå
+	POINT_COLOR = BLUE; 	//è“è‰²å­—ä½“
 	
-	OSInit(&err); 					//UCOSIII³õÊ¼»¯
-	while(lwip_comm_init()) 		//lwip³õÊ¼»¯
+	OSInit(&err); 					//UCOSIIIåˆå§‹åŒ–
+	while(lwip_comm_init()) 		//lwipåˆå§‹åŒ–
 	{
-		LCD_ShowString(30,110,200,20,16,"Lwip Init failed!"); 	//lwip³õÊ¼»¯Ê§°Ü
+		LCD_ShowString(30,110,200,20,16,"Lwip Init failed!"); 	//lwipåˆå§‹åŒ–å¤±è´¥
 		delay_ms(500);
 		LCD_Fill(30,110,230,150,WHITE);
 		delay_ms(500); 
 	}
-	LCD_ShowString(30,110,200,20,16,"Lwip Init Success!"); 		//lwip³õÊ¼»¯³É¹¦
-//	httpd_init();  												//http³õÊ¼»¯
-	while(tcp_server_init()) 									//³õÊ¼»¯tcp_server(´´½¨tcp_serverÏß³Ì)
+	LCD_ShowString(30,110,200,20,16,"Lwip Init Success!"); 		//lwipåˆå§‹åŒ–æˆåŠŸ
+//	httpd_init();  												//httpåˆå§‹åŒ–
+	while(tcp_server_init()) 									//tcp_serveråˆå§‹åŒ–(åˆ›å»ºtcp_serverçº¿ç¨‹)
 	{
-		LCD_ShowString(30,150,200,20,16,"TCP Server failed!!"); //tcp·şÎñÆ÷´´½¨Ê§°Ü
+		LCD_ShowString(30,150,200,20,16,"TCP Server failed!!"); //tcpæœåŠ¡å™¨åˆ›å»ºå¤±è´¥
 		delay_ms(500);
 		LCD_Fill(30,150,230,170,WHITE);
 		delay_ms(500);
 	}
-	OS_CRITICAL_ENTER();//½øÈëÁÙ½çÇø
-	//´´½¨¿ªÊ¼ÈÎÎñ
-	OSTaskCreate((OS_TCB 	* )&StartTaskTCB,		//ÈÎÎñ¿ØÖÆ¿é
-				 (CPU_CHAR	* )"start task", 		//ÈÎÎñÃû×Ö
-                 (OS_TASK_PTR )start_task, 			//ÈÎÎñº¯Êı
-                 (void		* )0,					//´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                 (OS_PRIO	  )START_TASK_PRIO,     //ÈÎÎñÓÅÏÈ¼¶
-                 (CPU_STK   * )&START_TASK_STK[0],	//ÈÎÎñ¶ÑÕ»»ùµØÖ·
-                 (CPU_STK_SIZE)START_STK_SIZE/10,	//ÈÎÎñ¶ÑÕ»Éî¶ÈÏŞÎ»
-                 (CPU_STK_SIZE)START_STK_SIZE,		//ÈÎÎñ¶ÑÕ»´óĞ¡
-                 (OS_MSG_QTY  )0,					//ÈÎÎñÄÚ²¿ÏûÏ¢¶ÓÁĞÄÜ¹»½ÓÊÕµÄ×î´óÏûÏ¢ÊıÄ¿,Îª0Ê±½ûÖ¹½ÓÊÕÏûÏ¢
-                 (OS_TICK	  )0,					//µ±Ê¹ÄÜÊ±¼äÆ¬ÂÖ×ªÊ±µÄÊ±¼äÆ¬³¤¶È£¬Îª0Ê±ÎªÄ¬ÈÏ³¤¶È£¬
-                 (void   	* )0,					//ÓÃ»§²¹³äµÄ´æ´¢Çø
-                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, //ÈÎÎñÑ¡Ïî
-                 (OS_ERR 	* )&err);				//´æ·Å¸Ãº¯Êı´íÎóÊ±µÄ·µ»ØÖµ
-	OS_CRITICAL_EXIT();	//ÍË³öÁÙ½çÇø	 
-	OSStart(&err); 		//¿ªÆôUCOS
+	OS_CRITICAL_ENTER();//è¿›å…¥ä¸´ç•ŒåŒº
+	//åˆ›å»ºå¼€å§‹ä»»åŠ¡
+	OSTaskCreate((OS_TCB 	* )&StartTaskTCB,		//ä»»åŠ¡æ§åˆ¶å—
+	(CPU_CHAR	* )"start task", 		//ä»»åŠ¡åå­—
+                 (OS_TASK_PTR )start_task, 			//ä»»åŠ¡å‡½æ•°
+                 (void		* )0,					//ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                 (OS_PRIO	  )START_TASK_PRIO,     //ä»»åŠ¡ä¼˜å…ˆçº§
+                 (CPU_STK   * )&START_TASK_STK[0],	//ä»»åŠ¡å †æ ˆåŸºåœ°å€
+                 (CPU_STK_SIZE)START_STK_SIZE/10,	//ä»»åŠ¡å †æ ˆæ·±åº¦é™ä½
+                 (CPU_STK_SIZE)START_STK_SIZE,		//ä»»åŠ¡å †æ ˆå¤§å°
+                 (OS_MSG_QTY  )0,					//ä»»åŠ¡å†…éƒ¨æ¶ˆæ¯é˜Ÿåˆ—èƒ½å¤Ÿæ¥å—çš„æœ€å¤§æ¶ˆæ¯æ•°ç›®ï¼Œä¸º0æ—¶ç¦æ­¢æ¥å—æ¶ˆæ¯
+                 (OS_TICK	  )0,					//å½“ä½¿èƒ½æ—¶é—´ç‰‡è½®è½¬æ—¶çš„æ—¶é—´ç‰‡é•¿åº¦ï¼Œä¸º0æ—¶ä¸ºé»˜è®¤é•¿åº¦
+                 (void   	* )0,					//ç”¨æˆ·è¡¥å……çš„å­˜å‚¨åŒº
+                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, //ä»»åŠ¡é€‰é¡¹
+                 (OS_ERR 	* )&err);				//å­˜æ”¾è¯¥å‡½æ•°é”™è¯¯æ—¶çš„è¿”å›å€¼
+	OS_CRITICAL_EXIT();	//é€€å‡ºä¸´ç•ŒåŒº
+	OSStart(&err); 		//å¼€å¯UCOS
 }
 
-//startÈÎÎñ
+//startä»»åŠ¡
 void start_task(void *p_arg)
 {
 	OS_ERR err;
@@ -186,24 +183,24 @@ void start_task(void *p_arg)
 
 	CPU_Init();
 #if OS_CFG_STAT_TASK_EN > 0u
-   OSStatTaskCPUUsageInit(&err);  	//Í³¼ÆÈÎÎñ                
+   OSStatTaskCPUUsageInit(&err);  	//ç»Ÿè®¡ä»»åŠ¡             
 #endif
 	
-#ifdef CPU_CFG_INT_DIS_MEAS_EN		//Èç¹ûÊ¹ÄÜÁË²âÁ¿ÖĞ¶Ï¹Ø±ÕÊ±¼ä
+#ifdef CPU_CFG_INT_DIS_MEAS_EN		//å¦‚æœä½¿èƒ½äº†æµ‹é‡ä¸­æ–­å®˜åšæ—¶é—´
     CPU_IntDisMeasMaxCurReset();	
 #endif
 
-#if	OS_CFG_SCHED_ROUND_ROBIN_EN  //µ±Ê¹ÓÃÊ±¼äÆ¬ÂÖ×ªµÄÊ±ºò
-	 //Ê¹ÄÜÊ±¼äÆ¬ÂÖ×ªµ÷¶È¹¦ÄÜ,Ê±¼äÆ¬³¤¶ÈÎª1¸öÏµÍ³Ê±ÖÓ½ÚÅÄ£¬¼È1*5=5ms
+#if	OS_CFG_SCHED_ROUND_ROBIN_EN  //å½“æ—¶é—´ç‰‡è½®è½¬çš„æ—¶å€™
+	//ä½¿èƒ½æ—¶é—´ç‰‡è½®è½¬è°ƒåº¦åŠŸèƒ½ï¼Œæ—¶é—´ç‰‡é•¿åº¦ä¸º1ä¸ªç³»ç»Ÿæ—¶é’ŸèŠ‚æ‹ï¼Œå³1*5=5ms
 	OSSchedRoundRobinCfg(DEF_ENABLED,1,&err);  
 #endif		
 	
 #if LWIP_DHCP
-	lwip_comm_dhcp_creat(); //´´½¨DHCPÈÎÎñ
+	lwip_comm_dhcp_creat(); //åˆ›å»ºDHCPä»»åŠ¡
 #endif
 
-	OS_CRITICAL_ENTER();	//½øÈëÁÙ½çÇø
-	//´´½¨LEDÈÎÎñ
+	OS_CRITICAL_ENTER();	//è¿›å…¥ä¸´ç•ŒåŒº
+	//åˆ›å»ºLEDä»»åŠ¡
 	OSTaskCreate((OS_TCB 	* )&LedTaskTCB,		
 				 (CPU_CHAR	* )"led0 task", 		
                  (OS_TASK_PTR )led_task, 			
@@ -217,7 +214,7 @@ void start_task(void *p_arg)
                  (void   	* )0,					
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
                  (OS_ERR 	* )&err);								 
-	//´´½¨ÏÔÊ¾ÈÎÎñ
+	//åˆ›å»ºæ˜¾ç¤ºä»»åŠ¡
 	OSTaskCreate((OS_TCB 	* )&DisplayTaskTCB,		
 				 (CPU_CHAR	* )"display task", 		
                  (OS_TASK_PTR )display_task, 			
@@ -231,7 +228,7 @@ void start_task(void *p_arg)
                  (void   	* )0,				
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);				
-//´´½¨KEYÈÎÎñ
+//åˆ›å»ºKEYä»»åŠ¡
 	OSTaskCreate((OS_TCB 	* )&KeyTaskTCB,		
 				 (CPU_CHAR	* )"key task", 		
                  (OS_TASK_PTR )key_task, 			
@@ -245,41 +242,41 @@ void start_task(void *p_arg)
                  (void   	* )0,				
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);											 
-	OS_TaskSuspend((OS_TCB*)&StartTaskTCB,&err);		//¹ÒÆğ¿ªÊ¼ÈÎÎñ			 
-	OS_CRITICAL_EXIT();	//½øÈëÁÙ½çÇø
+	OS_TaskSuspend((OS_TCB*)&StartTaskTCB,&err);		//æŒ‚èµ·å¼€å§‹ä»»åŠ¡
+	OS_CRITICAL_EXIT();	//é€€å‡ºä¸´ç•ŒåŒº
 }
 
-//ÏÔÊ¾µØÖ·µÈĞÅÏ¢
+//æ˜¾ç¤ºåœ°å€ä»»åŠ¡
 void display_task(void *pdata)
 {
 	OS_ERR err;
 	while(1)
 	{ 
-#if LWIP_DHCP									//µ±¿ªÆôDHCPµÄÊ±ºò
-		if(lwipdev.dhcpstatus != 0) 			//¿ªÆôDHCP
+#if LWIP_DHCP									//å½“å¼€å¯DHCPçš„æ—¶å€™
+		if(lwipdev.dhcpstatus != 0) 			//å¼€å¯DHCP
 		{
-			show_address(lwipdev.dhcpstatus );	//ÏÔÊ¾µØÖ·ĞÅÏ¢
-			OS_TaskSuspend((OS_TCB*)&DisplayTaskTCB,&err);		//¹ÒÆğ×ÔÉíÈÎÎñ	
+			show_address(lwipdev.dhcpstatus );	//æ˜¾ç¤ºåŠ¨æ€åœ°å€ä¿¡æ¯
+			OS_TaskSuspend((OS_TCB*)&DisplayTaskTCB,&err);		//æŒ‚èµ·æ˜¾ç¤ºåœ°å€ä»»åŠ¡
 		}
 #else
-		show_address(0); 						//ÏÔÊ¾¾²Ì¬µØÖ·
-		OSTaskSuspend(&DisplayTaskTCB,&err); 			//ÏÔÊ¾ÍêµØÖ·ĞÅÏ¢ºó¹ÒÆğ×ÔÉíÈÎÎñ
+		show_address(0); 						//æ˜¾ç¤ºé™æ€åœ°å€ä¿¡æ¯
+		OSTaskSuspend(&DisplayTaskTCB,&err); 			//æŒ‚èµ·æ˜¾ç¤ºåœ°å€ä»»åŠ¡
 #endif //LWIP_DHCP
-		OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_HMSM_STRICT,&err); //ÑÓÊ±500ms
+		OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_HMSM_STRICT,&err); //å»¶æ—¶500ms
 	}
 }
 
-//ledÈÎÎñ
+//ledä»»åŠ¡
 void led_task(void *pdata)
 {
 	OS_ERR err;
 	while(1)
 	{
 		LED0 = !LED0;
-		OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_HMSM_STRICT,&err); //ÑÓÊ±500ms
+		OSTimeDlyHMSM(0,0,0,500,OS_OPT_TIME_HMSM_STRICT,&err); //å»¶æ—¶500ms
  	}
 }
-//keyÈÎÎñ
+//keyä»»åŠ¡
 void key_task(void *pdata)
 {
 	u8 key; 
@@ -287,11 +284,11 @@ void key_task(void *pdata)
 	while(1)
 	{
 		key = KEY_Scan(0);
-		if(key==KEY0_PRES) //·¢ËÍÊı¾İ
+		if(key==KEY0_PRES) //å‘é€æ•°æ®
 		{		
-			tcp_server_flag |= LWIP_SEND_DATA; //±ê¼ÇLWIPÓĞÊı¾İÒª·¢ËÍ
+			tcp_server_flag |= LWIP_SEND_DATA; //æ ‡è®°LWIPæœ‰æ•°æ®è¦å‘é€
 		}
-		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); //ÑÓÊ±500ms
+		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); //å»¶æ—¶500ms
 	}
 }
 

@@ -55,7 +55,7 @@
 		u8 Reserved2;						//保留位
 		u8 Reserved3;						//保留位
 		u8 Reserved4;						//保留位
-		u8 Timestamp[2];							//时间戳
+		u8 Timestamp;							//时间戳
 		u8 CRCCheck[2];							//CRC校验
  }TCP_PACK;
 //u8 TCP_PACK_BUFSIZE=56;
@@ -130,7 +130,6 @@ static void tcp_server_thread(void *arg)
 				{	
 					OS_CRITICAL_ENTER();	//关中断					
 					memset(&Tcp_Server_Recvbuf,0,TCP_PACK_BUFSIZE);  //数据接收缓冲区清零
-//					memset(tcp_server_recvbuf,0,TCP_PACK_BUFSIZE);  //数据接收缓冲区清零
 					for(q=recvbuf->p;q!=NULL;q=q->next)  //遍历完整个pbuf链表
 					{
 						//判断要拷贝到TCP_SERVER_RX_BUFSIZE中的数据是否大于TCP_SERVER_RX_BUFSIZE的剩余空间，如果大于

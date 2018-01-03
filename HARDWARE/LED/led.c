@@ -1,34 +1,22 @@
 #include "led.h"
 
-//////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌĞòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßĞí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32F407¿ª·¢°å
-//LEDÇı¶¯´úÂë	   
-//ÕıµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2014/6/10
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓĞ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖİÊĞĞÇÒíµç×Ó¿Æ¼¼ÓĞÏŞ¹«Ë¾ 2014-2024
-//All rights reserved									  
-////////////////////////////////////////////////////////////////////////////////// 	
 
-//³õÊ¼»¯PF9ºÍPF10ÎªÊä³ö¿Ú.²¢Ê¹ÄÜÕâÁ½¸ö¿ÚµÄÊ±ÖÓ		    
-//LED IO³õÊ¼»¯
+//åˆå§‹åŒ–PF9å’ŒPF10ä¸ºè¾“å‡ºå£ï¼Œå¹¶ä½¿èƒ½è¿™ä¸¤ä¸ªå£çš„æ—¶é’Ÿ    
+//LED åˆå§‹åŒ–
 void LED_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF,ENABLE); //Ê¹ÄÜGPIODµÄÊ±ÖÓ
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF,ENABLE); //ä½¿èƒ½GPIODæ—¶é’Ÿ
 	
 	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_9|GPIO_Pin_10;
-	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_OUT;//Êä³ö
-	GPIO_InitStructure.GPIO_OType=GPIO_OType_PP;  //ÍÆÍìÊä³ö
-	GPIO_InitStructure.GPIO_PuPd=GPIO_PuPd_NOPULL;  //ÉÏÀ­
-	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_100MHz; //¸ßËÙGPIO
+	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_OUT;//è¾“å‡º
+	GPIO_InitStructure.GPIO_OType=GPIO_OType_PP;  //æ¨æŒ½è¾“å‡º
+	GPIO_InitStructure.GPIO_PuPd=GPIO_PuPd_NOPULL;  //ä¸Šæ‹‰
+	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_100MHz; //é«˜é€ŸGPIO
 	GPIO_Init(GPIOF,&GPIO_InitStructure);
 	
-	GPIO_SetBits(GPIOF,GPIO_Pin_9|GPIO_Pin_10); //GPIOF9,10¸ßµçÆ½
+	GPIO_SetBits(GPIOF,GPIO_Pin_9|GPIO_Pin_10); //GPIOF9,10é«˜ç”µå¹³
 }
 
 void Set_Led(u8 LED,u8 state)
