@@ -5,77 +5,30 @@
 #include "lwip/lwip_sys.h"
 #include "lwip/api.h"
 #include "lcd.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌĞòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßĞí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32F407¿ª·¢°å
-//NETCONN API±à³Ì·½Ê½µÄTCP·şÎñÆ÷²âÊÔ´úÂë	   
-//ÕıµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2014/8/15
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓĞ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖİÊĞĞÇÒíµç×Ó¿Æ¼¼ÓĞÏŞ¹«Ë¾ 2009-2019
-//All rights reserved									  
-//*******************************************************************************
-//ĞŞ¸ÄĞÅÏ¢
-//ÎŞ
-////////////////////////////////////////////////////////////////////////////////// 	   
+
  
 
- typedef struct{
-		u8 Head[2];									//Ö¡Í·1		0x88 0x66	
-		u8 TotalControlEnable;		//×Ü¿ØÊ¹ÄÜ  0/Enable  1/Disable
-		u8 LeftWheelIncrement[4];				//×óÂÖÔöÁ¿£¬µ¥Î»mm Á¿³ÌÎª0-4228.250625KM
-		u8 RightWheelIncrement[4];				//ÓÒÂÖÔöÁ¿£¬µ¥Î»mm  Á¿³ÌÎª0-4228.250625KM
-		u8 CCWAngleIncrement[2];		//ÄæÊ±Õë½Ç¶ÈÔöÁ¿(0.1¡ã)
-		u8 EncoderErrorCode;			//±àÂëÆ÷¹ÊÕÏÂë
-		u8 SpeedErrorCode;				//µç»ú×ªÊı¹ÊÕÏÂë
-		u8 AngleErrorCode;				//µç»ú½Ç¶È¹ÊÕÏÂë
-		u8 DriverErrorCode[2];				//Çı¶¯Æ÷¹ÊÕÏÂë
-		u8 IMUErrorCode;					//IMU¹ÊÕÏÂë
-		u8 CurrentBatteryLevel;		//µ±Ç°µçÁ¿°Ù·Ö±È
-		u8 BatteryErrorCode;			//µç³Ø¹ÊÕÏÂë
-		u8 ChargingPileAngle;			//³äµç×®Æ«½Ç
-		u8 ChargingCircuitCurrent;//³äµç»ØÂ·µçÁ÷±êÖ¾
-		u8 LocationErrorCode;			//¶¨Î»¹ÊÕÏÂë
-		u8 UltrasonicDistanceNo1[2];//1ºÅ³¬Éù²¨¾àÀë
-		u8 UltrasonicDistanceNo2[2];//2ºÅ³¬Éù²¨¾àÀë
-		u8 UltrasonicDistanceNo3[2];//3ºÅ³¬Éù²¨¾àÀë
-		u8 UltrasonicDistanceNo4[2];//4ºÅ³¬Éù²¨¾àÀë
-	 	u8 UltrasonicDistanceNo5[2];//5ºÅ³¬Éù²¨¾àÀë
-		u8 UltrasonicDistanceNo6[2];//6ºÅ³¬Éù²¨¾àÀë
-		u8 UltrasonicDistanceNo7[2];//7ºÅ³¬Éù²¨¾àÀë
-		u8 UltrasonicDistanceNo8[2];//8ºÅ³¬Éù²¨¾àÀë
-		u8 UltrasonicErrorCode;		//³¬Éù²¨¹ÊÕÏÂë
-		u8 InfraredRanging[4];			//ºìÍâ²â¾à   1/³µÂÖĞü¿Õ 0/³µÂÖÎ´Ğü¿Õ InfraredRanging[0] ºìÍâ1 InfraredRanging[1] ºìÍâ2 InfraredRanging[2] ºìÍâ3 InfraredRanging[3]ºìÍâ4  ²â¾à·¶Î§0-255mm
-		u8 InfraredErrorCode;			//ºìÍâ²â¾à´íÎóÂë
-		u8 CrashSensorStatus[2];		//Åö×²´«¸ĞÆ÷×´Ì¬ CrashSensorStatus[0] ´«¸ĞÆ÷1×´Ì¬ CrashSensorStatus[1]´«¸ĞÆ÷2×´Ì¬
-		u8 CommunicationErrorCode;//Åö×²´«¸ĞÆ÷´íÎóÂë
-		u8 Reserved1;						//±£ÁôÎ»
-		u8 Reserved2;						//±£ÁôÎ»
-		u8 Reserved3;						//±£ÁôÎ»
-		u8 Reserved4;						//±£ÁôÎ»
-		u8 Timestamp;							//Ê±¼ä´Á
-		u8 CRCCheck[2];							//CRCĞ£Ñé
- }TCP_PACK;
-//u8 TCP_PACK_BUFSIZE=56;
-TCP_PACK Tcp_Server_Recvbuf;
-TCP_PACK Tcp_Server_Transbuf;
-u8 tcp_server_recvbuf[TCP_SERVER_RX_BUFSIZE];	//TCP¿Í»§¶Ë½ÓÊÕÊı¾İ»º³åÇø
-u8 *tcp_server_sendbuf="Explorer STM32F407 NETCONN TCP Server send data\r\n";	
-u8 tcp_server_flag;								//TCP·şÎñÆ÷Êı¾İ·¢ËÍ±êÖ¾Î»
 
-//TCP¿Í»§¶ËÈÎÎñ
+u8 TCP_SEND_PACK_BUFSIZE=60;
+static TCP_SEND_PACK Tcp_Server_Recvbuf;
+static TCP_SEND_PACK Tcp_Server_Transbuf;
+TCP_SEND_PACK Tcp_Server_Recvconbuf;
+TCP_SEND_PACK Tcp_Server_Transconbuf;
+//u8 tcp_server_recvbuf[TCP_SERVER_RX_BUFSIZE];	//TCPæœåŠ¡å™¨æ•°æ®æ¥æ”¶ç¼“å­˜åŒº
+char *tcp_server_sendbuffer="Explorer STM32F407 NETCONN TCP Server received data\r\n";	
+u8 tcp_server_flag;								//TCPæœåŠ¡å™¨å‘é€æ•°æ®æ ‡å¿—ä½
+
+//TCPæœåŠ¡ç«¯ä»»åŠ¡
 #define TCPSERVER_PRIO		6
-//ÈÎÎñ¶ÑÕ»´óĞ¡
+//ä»»åŠ¡å †æ ˆå¤§å°
 #define TCPSERVER_STK_SIZE	300
-//ÈÎÎñ¿ØÖÆ¿é
+//ä»»åŠ¡æ§åˆ¶å—
 OS_TCB TCPSERVERTaskTCB;
-//ÈÎÎñ¶ÑÕ»
+//ä»»åŠ¡å †æ ˆ
 CPU_STK TCPSERVER_TASK_STK[TCPSERVER_STK_SIZE];
   
 
-//tcp·şÎñÆ÷ÈÎÎñ
+//tcpæœåŠ¡å™¨ä»»åŠ¡
 static void tcp_server_thread(void *arg)
 {
 //	OS_ERR err_os;
@@ -87,73 +40,84 @@ static void tcp_server_thread(void *arg)
 	struct netconn *conn, *newconn;
 	static ip_addr_t ipaddr;
 	static u16_t 			port;
-	static u8 TCP_PACK_BUFSIZE = sizeof(Tcp_Server_Transbuf);
+//	static u8 TCP_PACK_BUFSIZE = sizeof(Tcp_Server_Transbuf);
 	LWIP_UNUSED_ARG(arg);
 
-	conn = netconn_new(NETCONN_TCP);  //´´½¨Ò»¸öTCPÁ´½Ó
-	netconn_bind(conn,IP_ADDR_ANY,TCP_SERVER_PORT);  //°ó¶¨¶Ë¿Ú 8ºÅ¶Ë¿Ú
-	netconn_listen(conn);  		//½øÈë¼àÌıÄ£Ê½
-	conn->recv_timeout = 10;  	//½ûÖ¹×èÈûÏß³Ì µÈ´ı10ms
+	conn = netconn_new(NETCONN_TCP);  //åˆ›å»ºä¸€ä¸ªTCPè¿æ¥
+	netconn_bind(conn,IP_ADDR_ANY,TCP_SERVER_PORT);  //ç»‘å®šç«¯å£ 8080ç«¯å£ 
+	netconn_listen(conn);  		//	è¿›å…¥ç›‘å¬æ¨¡å¼
+	conn->recv_timeout = 10;  	//ç¦æ­¢é˜»å¡çº¿ç¨‹  ç­‰å¾…10ms
 	while (1) 
 	{
-		err = netconn_accept(conn,&newconn);  //½ÓÊÕÁ¬½ÓÇëÇó
+		err = netconn_accept(conn,&newconn);  //æ¥æ”¶è¿æ¥è¯·æ±‚
 		if(err==ERR_OK)newconn->recv_timeout = 10;
 
-		if (err == ERR_OK)    //´¦ÀíĞÂÁ¬½ÓµÄÊı¾İ
+		if (err == ERR_OK)    //å¤„ç†æ–°è¿æ¥çš„æ•°æ®
 		{ 
 			struct netbuf *recvbuf;
 
-			netconn_getaddr(newconn,&ipaddr,&port,0); //»ñÈ¡Ô¶¶ËIPµØÖ·ºÍ¶Ë¿ÚºÅ
+			netconn_getaddr(newconn,&ipaddr,&port,0); //è·å–è¿œç«¯IPåœ°å€å’Œç«¯å£å·
 			
 			remot_addr[3] = (uint8_t)(ipaddr.addr >> 24); 
 			remot_addr[2] = (uint8_t)(ipaddr.addr>> 16);
 			remot_addr[1] = (uint8_t)(ipaddr.addr >> 8);
 			remot_addr[0] = (uint8_t)(ipaddr.addr);
-			printf("Ö÷»ú%d.%d.%d.%dÁ¬½ÓÉÏ·şÎñÆ÷,Ö÷»ú¶Ë¿ÚºÅÎª:%d\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3],port);
+			printf("ä¸»æœº%d.%d.%d.%dè¿æ¥ä¸ŠæœåŠ¡å™¨,ä¸»æœºç«¯å£å·ä¸º:%d\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3],port);
+
+			while(1)
+			{
 			Tcp_Server_Transbuf.Head[0] =0x66;
 			Tcp_Server_Transbuf.Head[1] =0x88;
 			Tcp_Server_Transbuf.ChargingPileAngle =0xcf;
-			while(1)
-			{
-				if((tcp_server_flag & LWIP_SEND_DATA) == LWIP_SEND_DATA) //ÓĞÊı¾İÒª·¢ËÍ
+				if((tcp_server_flag & LWIP_SEND_DATA) == LWIP_SEND_DATA) //æœ‰æ•°æ®è¦å‘é€
 				{
-//					err = netconn_write(newconn ,tcp_server_sendbuf,strlen((char*)tcp_server_sendbuf),NETCONN_COPY); //·¢ËÍtcp_server_sendbufÖĞµÄÊı¾İ
+//					err = netconn_write(newconn ,tcp_server_sendbuf,strlen((char*)tcp_server_sendbuf),NETCONN_COPY); //å‘é€tcp_server_sendbufä¸­çš„æ•°æ®
 					
-					err = netconn_write(newconn ,&Tcp_Server_Transbuf,TCP_PACK_BUFSIZE,NETCONN_COPY); //·¢ËÍtcp_server_sendbufÖĞµÄÊı¾İ
+					err = netconn_write(newconn ,&Tcp_Server_Transbuf,TCP_SEND_PACK_BUFSIZE,NETCONN_COPY); //å‘é€Tcp_Server_TransbufæŒ‡å‘çš„æ•°æ®
 					if(err != ERR_OK)
 					{
-						printf("·¢ËÍÊ§°Ü\r\n");
+						printf("å‘é€å¤±è´¥\r\n");
 					}
 					tcp_server_flag &= ~LWIP_SEND_DATA;
 				}
-				if((recv_err = netconn_recv(newconn,&recvbuf)) == ERR_OK)  	//½ÓÊÕµ½Êı¾İ
+				if((recv_err = netconn_recv(newconn,&recvbuf)) == ERR_OK)  	//æ¥æ”¶åˆ°æ•°æ®
 				{	
-					OS_CRITICAL_ENTER();	//¹ØÖĞ¶Ï					
-					memset(&Tcp_Server_Recvbuf,0,TCP_PACK_BUFSIZE);  //Êı¾İ½ÓÊÕ»º³åÇøÇåÁã
-					for(q=recvbuf->p;q!=NULL;q=q->next)  //±éÀúÍêÕû¸öpbufÁ´±í
+					OS_CRITICAL_ENTER();	//å…³ä¸­æ–­				
+					memset(&Tcp_Server_Recvbuf,0,TCP_SEND_PACK_BUFSIZE);  //æ•°æ®æ¥æ”¶ç¼“å­˜åŒºæ¸…é›¶
+					for(q=recvbuf->p;q!=NULL;q=q->next)  //éå†å®Œæ•´ä¸ªpbufé“¾è¡¨
 					{
-						//ÅĞ¶ÏÒª¿½±´µ½TCP_SERVER_RX_BUFSIZEÖĞµÄÊı¾İÊÇ·ñ´óÓÚTCP_SERVER_RX_BUFSIZEµÄÊ£Óà¿Õ¼ä£¬Èç¹û´óÓÚ
-						//µÄ»°¾ÍÖ»¿½±´TCP_SERVER_RX_BUFSIZEÖĞÊ£Óà³¤¶ÈµÄÊı¾İ£¬·ñÔòµÄ»°¾Í¿½±´ËùÓĞµÄÊı¾İ
-						if(q->len > (TCP_PACK_BUFSIZE-data_len)) memcpy(&Tcp_Server_Recvbuf+data_len,q->payload,(TCP_PACK_BUFSIZE-data_len));//¿½±´Êı¾İ
+						//åˆ¤æ–­è¦æ‹·è´åˆ°Tcp_Server_Recvbufçš„æ•°æ®æ˜¯å¦å¤§äºTcp_Server_Recvbufçš„å‰©ä½™ç©ºé—´å¤§å°ï¼Œå¦‚æœå¤§äº
+						//å°±åªæ‹·è´Tcp_Server_Recvbufä¸­å‰©ä½™é•¿åº¦çš„æ•°æ®ï¼Œå¦åˆ™çš„è¯å°±æ‹·è´æ‰€æœ‰çš„æ•°æ®
+						if(q->len > (TCP_SEND_PACK_BUFSIZE-data_len)) memcpy(&Tcp_Server_Recvbuf+data_len,q->payload,(TCP_SEND_PACK_BUFSIZE-data_len));//æ‹·è´æ•°æ®
 						else memcpy(&Tcp_Server_Recvbuf+data_len,q->payload,q->len);
 						data_len += q->len;  	
-						if(data_len > TCP_PACK_BUFSIZE) break; //³¬³öTCP¿Í»§¶Ë½ÓÊÕÊı×é,Ìø³ö	
+						if(data_len > TCP_SEND_PACK_BUFSIZE) break; //è¶…å‡ºTCPæœåŠ¡å™¨æ¥æ”¶æ•°ç»„å¤§å°ï¼Œè·³å‡º
 					}
-					OS_CRITICAL_EXIT();	//¿ªÖĞ¶Ï
-					data_len=0;  //¸´ÖÆÍê³Éºódata_lenÒªÇåÁã¡
+					OS_CRITICAL_EXIT();	//å¼€ä¸­æ–­
+					data_len=0;  //å¤åˆ¶å®Œådata_lenè¦æ¸…é›¶
 					if((Tcp_Server_Recvbuf.Head[0] == 0x88)&&(Tcp_Server_Recvbuf.Head[1] == 0x66))
-					{					
-						printf("Tcp_Server_Recvbuf.Head check ok head1==0x88 head2==0x66\r\n");  //Êı¾İÓĞÎó
+					{	
+						Tcp_Server_Transbuf.Head[0] =0x66;
+			Tcp_Server_Transbuf.Head[1] =0x88;
+			Tcp_Server_Transbuf.ChargingPileAngle =0xcf;
+//						memcpy(&Tcp_Server_Recvconbuf,Tcp_Server_Recvbuf,TCP_PACK_BUFSIZE);
+						err = netconn_write(newconn ,&Tcp_Server_Transbuf,TCP_SEND_PACK_BUFSIZE,NETCONN_COPY); //å›å¤Tcp_Server_Transbufæ•°æ®
+						if(err != ERR_OK)
+						{
+							printf("å‘é€å¤±è´¥\r\n");
+						}
+						printf("Tcp_Server_Recvbuf.Head check ok head1==0x88 head2==0x66\r\n");  //ä¸²å£å‘é€æ•°æ®
 					}
+					err = netconn_write(newconn ,tcp_server_sendbuffer,strlen(tcp_server_sendbuffer),NETCONN_COPY);
 					LCD_ShowString(30,270,210,200,16,(u8*)&Tcp_Server_Recvbuf);
-					printf("rece:%s\r\n",(char*)&Tcp_Server_Recvbuf);  //Í¨¹ı´®¿Ú·¢ËÍ½ÓÊÕµ½µÄÊı¾İ
-					memset(&Tcp_Server_Recvbuf,0,TCP_SERVER_RX_BUFSIZE);  //Êı¾İ½ÓÊÕ»º³åÇøÇåÁã
+					printf("rece:%s\r\n",(char*)&Tcp_Server_Recvbuf);  //é€šè¿‡ä¸²å£å‘é€TCP_serveræ¥æ”¶åˆ°çš„æ•°æ®
+					memset(&Tcp_Server_Recvbuf,0,TCP_SEND_PACK_BUFSIZE);  //æ•°æ®æ¥æ”¶ç¼“å­˜åŒºæ¸…é›¶
 					netbuf_delete(recvbuf);
-				}else if(recv_err == ERR_CLSD)  //¹Ø±ÕÁ¬½Ó
+				}else if(recv_err == ERR_CLSD)  //å…³é—­è¿æ¥
 				{
 					netconn_close(newconn);
 					netconn_delete(newconn);
-					printf("Ö÷»ú:%d.%d.%d.%d¶Ï¿ªÓë·şÎñÆ÷µÄÁ¬½Ó\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3]);
+					printf("ä¸»æœº:%d.%d.%d.%dæ–­å¼€ä¸æœåŠ¡å™¨çš„è¿æ¥\r\n",remot_addr[0], remot_addr[1],remot_addr[2],remot_addr[3]);
 					break;
 				}
 				
@@ -163,16 +127,16 @@ static void tcp_server_thread(void *arg)
 }
 
 
-//´´½¨TCP·şÎñÆ÷Ïß³Ì
-//·µ»ØÖµ:0 TCP·şÎñÆ÷´´½¨³É¹¦
-//		ÆäËû TCP·şÎñÆ÷´´½¨Ê§°Ü
+//åˆ›å»ºTCPæœåŠ¡å™¨ä»»åŠ¡
+//è¿”å›å€¼ï¼š0 TCPæœåŠ¡å™¨ä»»åŠ¡åˆ›å»ºæˆåŠŸ
+//		å…¶ä»– TCPæœåŠ¡å™¨ä»»åŠ¡åˆ›å»ºå¤±è´¥
 u8 tcp_server_init(void)
 {
 	OS_ERR err;
 	CPU_SR_ALLOC();
 	
-	OS_CRITICAL_ENTER();	//½øÈëÁÙ½çÇø
-	//´´½¨TCP·şÎñÆ÷Ïß³Ì
+	OS_CRITICAL_ENTER();	//è¿›å…¥ä¸´ç•ŒåŒº
+	//åˆ›å»ºTCPæœåŠ¡å™¨çº¿ç¨‹
 	OSTaskCreate((OS_TCB 	* )&TCPSERVERTaskTCB,		
 				 (CPU_CHAR	* )"tcp server task", 		
                  (OS_TASK_PTR )tcp_server_thread, 			
@@ -186,7 +150,7 @@ u8 tcp_server_init(void)
                  (void   	* )0,				
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);
-	OS_CRITICAL_EXIT();		//ÍË³öÁÙ½çÇø
+	OS_CRITICAL_EXIT();		//é€€å‡ºä¸´ç•ŒåŒº
 	return 0;
 }
 

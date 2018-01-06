@@ -112,7 +112,7 @@ void ETHERNET_NVICConfiguration(void)
 u8 LAN8720_Get_Speed(void)
 {
 	u8 speed;
-	speed=((ETH_ReadPHYRegister(0x00,31)&0x1C)>>2); //´ÓLAN8720µÄ31ºÅ¼Ä´æÆ÷ÖĞ¶ÁÈ¡ÍøÂçËÙ¶ÈºÍË«¹¤Ä£Ê½
+	speed=((ETH_ReadPHYRegister(0x00,31)&0x1C)>>2); //ä»LAN8720çš„31å·å¯„å­˜å™¨ä¸­è¯»å–ç½‘ç»œé€Ÿåº¦å’ŒåŒå·¥æ¨¡å¼
 	return speed;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////

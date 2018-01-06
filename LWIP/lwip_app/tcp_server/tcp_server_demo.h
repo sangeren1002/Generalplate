@@ -2,31 +2,55 @@
 #define __TCP_SERVER_DEMO_H
 #include "sys.h"
 #include "includes.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//±¾³ÌĞòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßĞí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
-//ALIENTEK STM32F407¿ª·¢°å
-//NETCONN API±à³Ì·½Ê½µÄTCP·şÎñÆ÷²âÊÔ´úÂë	   
-//ÕıµãÔ­×Ó@ALIENTEK
-//¼¼ÊõÂÛÌ³:www.openedv.com
-//´´½¨ÈÕÆÚ:2014/8/15
-//°æ±¾£ºV1.0
-//°æÈ¨ËùÓĞ£¬µÁ°æ±Ø¾¿¡£
-//Copyright(C) ¹ãÖİÊĞĞÇÒíµç×Ó¿Æ¼¼ÓĞÏŞ¹«Ë¾ 2009-2019
-//All rights reserved									  
-//*******************************************************************************
-//ĞŞ¸ÄĞÅÏ¢
-//ÎŞ
-////////////////////////////////////////////////////////////////////////////////// 	   
+  
+ typedef struct{
+		u8 Head[2];									//å¸§å¤´	0x88 0x66	
+//		u8 TotalControlEnable;		//æ€»æ§ä½¿èƒ½ 0/Enable  1/Disable
+		u8 LeftWheelIncrement[4];				//å·¦è½®å¢é‡  é‡ç¨‹0-4228.250625KM
+		u8 RightWheelIncrement[4];				//å³è½®å¢é‡  é‡ç¨‹0-4228.250625KM
+		u8 CCWAngleIncrement[2];		//é€†æ—¶é’ˆè§’åº¦å¢é‡(0.1Â°)
+		u8 EncoderErrorCode;			//ç¼–ç å™¨æ•…éšœ
+		u8 SpeedErrorCode;				//ç”µæœºè½¬é€Ÿæ•…éšœ
+		u8 AngleErrorCode;				//ç”µæœºè§’åº¦æ•…éšœ
+		u8 DriverErrorCode[2];				//é©±åŠ¨å™¨æ•…éšœç 
+		u8 IMUErrorCode;					//IMUæ•…éšœç 
+		u8 CurrentBatteryLevel;		//å½“å‰ç”µé‡ç™¾åˆ†æ¯”
+		u8 BatteryErrorCode;			//ç”µæ± æ•…éšœç 
+		u8 ChargingPileAngle;			//å……ç”µæ¡©åè§’
+		u8 ChargingCircuitCurrent;//å……ç”µå›è·¯ç”µæµæ ‡å¿—
+		u8 LocationErrorCode;			//å®šä½æ•…éšœç 
+		u8 UltrasonicDistanceNo1[2];//1å·è¶…å£°æ³¢è·ç¦»
+		u8 UltrasonicDistanceNo2[2];//2å·è¶…å£°æ³¢è·ç¦»
+		u8 UltrasonicDistanceNo3[2];//3å·è¶…å£°æ³¢è·ç¦»
+		u8 UltrasonicDistanceNo4[2];//4å·è¶…å£°æ³¢è·ç¦»
+	 	u8 UltrasonicDistanceNo5[2];//5å·è¶…å£°æ³¢è·ç¦»
+		u8 UltrasonicDistanceNo6[2];//6å·è¶…å£°æ³¢è·ç¦»
+		u8 UltrasonicDistanceNo7[2];//7å·è¶…å£°æ³¢è·ç¦»
+		u8 UltrasonicDistanceNo8[2];//8å·è¶…å£°æ³¢è·ç¦»
+		u8 UltrasonicErrorCode;		//è¶…å£°æ³¢æ•…éšœç 
+		u8 InfraredRanging[4];			//çº¢å¤–æµ‹è·  1/è½¦è½®æ‚¬ç©º 0/è½¦è½®æœªæ‚¬ç©º InfraredRanging[0] çº¢å¤–1 InfraredRanging[1] çº¢å¤–2 InfraredRanging[2] çº¢å¤–3 InfraredRanging[3]çº¢å¤–4  çº¢å¤–æµ‹è·é‡ç¨‹0-255mm
+		u8 InfraredErrorCode;			//çº¢å¤–æµ‹è·æ•…éšœç 
+		u8 CrashSensorStatus[2];		//ç¢°æ’ä¼ æ„Ÿå™¨çŠ¶æ€ CrashSensorStatus[0] ä¼ æ„Ÿå™¨1çŠ¶æ€ CrashSensorStatus[1]ä¼ æ„Ÿå™¨2çŠ¶æ€
+		u8 CommunicationErrorCode;//ç¢°æ’ ä¼ æ„Ÿå™¨é”™è¯¯ç 
+		u8 Reserved1;						//ä¿ç•™ä½
+		u8 Reserved2;						//ä¿ç•™ä½
+		u8 Reserved3;						//ä¿ç•™ä½
+		u8 Reserved4;						//ä¿ç•™ä½
+		u8 Timestamp;							//æ—¶é—´æˆ³
+		u8 CRCCheck[2];							//CRCæ ¡éªŒ
+ }TCP_SEND_PACK;
 
 
-#define Tcp_PACK_BUFSIZE 60;
-#define TCP_SERVER_RX_BUFSIZE	2000		//¶¨Òåtcp server×î´ó½ÓÊÕÊı¾İ³¤¶È
-#define TCP_SERVER_PORT			8088	//¶¨Òåtcp serverµÄ¶Ë¿Ú
-#define LWIP_SEND_DATA			0X80	//¶¨ÒåÓĞÊı¾İ·¢ËÍ
+#define TCP_SERVER_RX_BUFSIZE	32		//å®šä¹‰tcp serveræ‰€æ¥å—çš„å•æ¬¡æœ€å¤§æ•°æ®ä¸ªæ•°
+#define TCP_SERVER_PORT			8088	//å®šä¹‰tcp serverç«¯å£å·
+#define LWIP_SEND_DATA			0X80	//å®šä¹‰æœ‰æ•°æ®è¦å‘é€
 
-extern u8 tcp_server_recvbuf[TCP_SERVER_RX_BUFSIZE];	//TCP¿Í»§¶Ë½ÓÊÕÊı¾İ»º³åÇø
-extern u8 tcp_server_flag;			//TCP·şÎñÆ÷Êı¾İ·¢ËÍ±êÖ¾Î»
+extern u8 TCP_SEND_PACK_BUFSIZE;
+ extern u8 tcp_server_flag;			//TCPæœåŠ¡å™¨æ•°æ®å‘é€æ ‡å¿—ä½
 
-u8 tcp_server_init(void);		//TCP·şÎñÆ÷³õÊ¼»¯(´´½¨TCP·şÎñÆ÷Ïß³Ì)
+
+extern TCP_SEND_PACK Tcp_Server_Recvconbuf;
+
+u8 tcp_server_init(void);		//TCPæœåŠ¡å™¨åˆå§‹åŒ–(åˆ›å»ºTCPæœåŠ¡å™¨ä»»åŠ¡)
 #endif
 

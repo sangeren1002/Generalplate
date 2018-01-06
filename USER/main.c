@@ -280,13 +280,18 @@ void led_task(void *pdata)
 void key_task(void *pdata)
 {
 	u8 key; 
+	u8 i;
 	OS_ERR err;
+	u16 c[7]={0x1103,0x6060,0x0001,0x0300,0x0000,0xc5f4,0x4f4f};
 	while(1)
 	{
 		key = KEY_Scan(0);
 		if(key==KEY0_PRES) //发送数据
 		{		
 			tcp_server_flag |= LWIP_SEND_DATA; //标记LWIP有数据要发送
+			for(i=0;i<7;i++)
+				printf("%x",c[i]);
+//			printf("%d",b);
 		}
 		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); //延时500ms
 	}
