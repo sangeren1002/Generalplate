@@ -108,7 +108,6 @@ static void tcp_server_thread(void *arg)
 						}
 						printf("Tcp_Server_Recvbuf.Head check ok head1==0x88 head2==0x66\r\n");  //串口发送数据
 					}
-					err = netconn_write(newconn ,tcp_server_sendbuffer,strlen(tcp_server_sendbuffer),NETCONN_COPY);
 					LCD_ShowString(30,270,210,200,16,(u8*)&Tcp_Server_Recvbuf);
 					printf("rece:%s\r\n",(char*)&Tcp_Server_Recvbuf);  //通过串口发送TCP_server接收到的数据
 					memset(&Tcp_Server_Recvbuf,0,TCP_SEND_PACK_BUFSIZE);  //数据接收缓存区清零

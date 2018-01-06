@@ -213,7 +213,7 @@
           <Type>0</Type>
           <LineNumber>98</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134262908</Address>
+          <Address>134262884</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -229,7 +229,7 @@
           <Type>0</Type>
           <LineNumber>76</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134262710</Address>
+          <Address>134262700</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -237,22 +237,6 @@
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>..\LWIP\lwip_app\tcp_server\tcp_server_demo.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Template\../LWIP/lwip_app/tcp_server/tcp_server_demo.c\76</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>294</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>.\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -282,6 +266,11 @@
           <count>4</count>
           <WinNumber>1</WinNumber>
           <ItemText>*Tcp_Server_Transbuf</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Tcp_Server_Transbuf</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
@@ -928,7 +917,7 @@
       <GroupNumber>7</GroupNumber>
       <FileNumber>43</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
