@@ -1,5 +1,4 @@
 ..\obj\usart3.o: ..\HARDWARE\USART3\usart3.c
-..\obj\usart3.o: ..\SYSTEM\delay\delay.h
 ..\obj\usart3.o: ..\SYSTEM\sys\sys.h
 ..\obj\usart3.o: ..\USER\stm32f4xx.h
 ..\obj\usart3.o: ..\CORE\core_cm4.h
@@ -37,7 +36,7 @@
 ..\obj\usart3.o: ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_dcmi.h
 ..\obj\usart3.o: ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h
 ..\obj\usart3.o: ..\HARDWARE\USART3\usart3.h
-..\obj\usart3.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 ..\obj\usart3.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\usart3.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 ..\obj\usart3.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 ..\obj\usart3.o: ..\HARDWARE\TIMER\timer.h

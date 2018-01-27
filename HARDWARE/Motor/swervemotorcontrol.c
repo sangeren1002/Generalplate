@@ -22,12 +22,13 @@ History:
 *************************/
 void Motor_PulsePositionSet(uint8_t addr, float PositionSet)  
 {
+	int32_t Position;
 	uint8_t PulsePositionSet[] = {0xff, 0x10, 0x00, 0x2E, 0x00, 0x02, 0x04, 0xff, 
 	                              0xff, 0xff, 0xff, 0xff, 0xff};   /* 初始化电机旋转角度（指定位置）的命令 */
 	
 	PulsePositionSet[0] = addr;
 																
-	int32_t Position = PositionSet/360*2500;
+	 Position = PositionSet/360*2500;
 																
 	PulsePositionSet[sizeof(PulsePositionSet)-3] = Position & 0x000000ff;
 	PulsePositionSet[sizeof(PulsePositionSet)-4] = (Position & 0x0000ff00)>>8;

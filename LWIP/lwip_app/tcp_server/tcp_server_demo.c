@@ -98,8 +98,8 @@ static void tcp_server_thread(void *arg)
 					if((Tcp_Server_Recvbuf.Head[0] == 0x88)&&(Tcp_Server_Recvbuf.Head[1] == 0x66))
 					{	
 						Tcp_Server_Transbuf.Head[0] =0x66;
-			Tcp_Server_Transbuf.Head[1] =0x88;
-			Tcp_Server_Transbuf.ChargingPileAngle =0xcf;
+						Tcp_Server_Transbuf.Head[1] =0x88;
+						Tcp_Server_Transbuf.ChargingPileAngle =0xcf;
 //						memcpy(&Tcp_Server_Recvconbuf,Tcp_Server_Recvbuf,TCP_PACK_BUFSIZE);
 						err = netconn_write(newconn ,&Tcp_Server_Transbuf,TCP_SEND_PACK_BUFSIZE,NETCONN_COPY); //回复Tcp_Server_Transbuf数据
 						if(err != ERR_OK)

@@ -1,16 +1,26 @@
 #ifndef __RS485_H
 #define __RS485_H			 
 #include "sys.h"	 								  
-
-
+//////////////////////////////////////////////////////////////////////////////////	 
+//±¾³ÌÐòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßÐí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
+//ALIENTEK STM32F407¿ª·¢°å
+//RS485Çý¶¯ ´úÂë	   
+//ÕýµãÔ­×Ó@ALIENTEK
+//¼¼ÊõÂÛÌ³:www.openedv.com
+//´´½¨ÈÕÆÚ:2014/5/7
+//°æ±¾£ºV1.0
+//°æÈ¨ËùÓÐ£¬µÁ°æ±Ø¾¿¡£
+//Copyright(C) ¹ãÖÝÊÐÐÇÒíµç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾ 2014-2024
+//All rights reserved									  
+////////////////////////////////////////////////////////////////////////////////// 	
 	  	
-extern u8 RS485_RX_BUF[64]; 		//æŽ¥æ”¶ç¼“å­˜ï¼Œæœ€å¤§64ä¸ªå­—èŠ‚
-extern u8 RS485_RX_CNT;   			//æŽ¥æ”¶åˆ°çš„æ•°æ®é•¿åº¦
+extern u8 RS485_RX_BUF[64]; 		//½ÓÊÕ»º³å,×î´ó64¸ö×Ö½Ú
+extern u8 RS485_RX_CNT;   			//½ÓÊÕµ½µÄÊý¾Ý³¤¶È
 
-//æ¨¡å¼æŽ§åˆ¶
-#define RS485_TX_EN		PGout(8)	//485æ¨¡å¼æŽ§åˆ¶ï¼š0.æŽ¥æ”¶ï¼›1.å‘é€
-//å¦‚æžœæƒ³ä¸²å£ä¸­æ–­æŽ¥æ”¶ï¼Œè®¾ç½®EN_USART2_RXä¸º1ï¼Œå¦åˆ™è®¾ç½®ä¸º0
-#define EN_USART2_RX 	1			//0,ä¸æŽ¥æ”¶;1,æŽ¥æ”¶
+//Ä£Ê½¿ØÖÆ
+#define RS485_TX_EN		PGout(8)	//485Ä£Ê½¿ØÖÆ.0,½ÓÊÕ;1,·¢ËÍ.
+//Èç¹ûÏë´®¿ÚÖÐ¶Ï½ÓÊÕ£¬ÉèÖÃEN_USART2_RXÎª1£¬·ñÔòÉèÖÃÎª0
+#define EN_USART2_RX 	1			//0,²»½ÓÊÕ;1,½ÓÊÕ.
 
 														 
 void RS485_Init(u32 bound);

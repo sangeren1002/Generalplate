@@ -1,6 +1,69 @@
-#ifndef _TIMER_H
-#define _TIMER_H
+#ifndef __TIMER_H
+#define __TIMER_H
 #include "sys.h"
+//////////////////////////////////////////////////////////////////////////////////	 
+//±¾³ÌÐòÖ»¹©Ñ§Ï°Ê¹ÓÃ£¬Î´¾­×÷ÕßÐí¿É£¬²»µÃÓÃÓÚÆäËüÈÎºÎÓÃÍ¾
+//ALIENTEK STM32F407¿ª·¢°å
+//¶¨Ê±Æ÷ Çý¶¯´úÂë	   
+//ÕýµãÔ­×Ó@ALIENTEK
+//¼¼ÊõÂÛÌ³:www.openedv.com
+//´´½¨ÈÕÆÚ:2014/5/4
+//°æ±¾£ºV1.6
+//°æÈ¨ËùÓÐ£¬µÁ°æ±Ø¾¿¡£
+//Copyright(C) ¹ãÖÝÊÐÐÇÒíµç×Ó¿Æ¼¼ÓÐÏÞ¹«Ë¾ 2014-2024
+//All rights reserved
+//********************************************************************************
+//ÐÞ¸ÄËµÃ÷
+//V1.1 20140504
+//ÐÂÔöTIM14_PWM_Initº¯Êý,ÓÃÓÚPWMÊä³ö
+//V1.2 20140504
+//ÐÂÔöTIM5_CH1_Cap_Initº¯Êý,ÓÃÓÚÊäÈë²¶»ñ
+//V1.3 20140506
+//ÐÂÔöTIM9_CH2_PWM_Initº¯Êý,ÓÃÓÚPWM DACÊµÑé
+//V1.4 20140723
+//ÐÂÔöTIM6_Int_Initº¯Êý
+//V1.5 20140726
+//ÐÂÔöTIM12_CH2_PWM_Initº¯Êý
+//V1.6 20140807
+//ÐÂÔöTIM7_Int_Initº¯Êý
+////////////////////////////////////////////////////////////////////////////////// 	 
 
-void TIM3_Int_Init(u16 arr,u16 psc);  //å®šæ—¶å™¨3åˆå§‹åŒ–
+//Í¨¹ý¸Ä±äTIM14->CCR1µÄÖµÀ´¸Ä±äÕ¼¿Õ±È£¬´Ó¶ø¿ØÖÆLED0µÄÁÁ¶È
+#define LED0_PWM_VAL TIM14->CCR1    
+//TIM9 CH2×÷ÎªPWM DACµÄÊä³öÍ¨µÀ 
+#define PWM_DAC_VAL  	TIM9->CCR2  
+
+//LCD PWM±³¹âÉèÖÃ 
+#define LCD_BLPWM_VAL   TIM12->CCR2 		
+
+void TIM3_Int_Init(u16 arr,u16 psc);
+void TIM14_PWM_Init(u32 arr,u32 psc);
+void TIM5_CH1_Cap_Init(u32 arr,u16 psc);
+void TIM9_CH2_PWM_Init(u16 arr,u16 psc);
+void TIM6_Int_Init(u16 arr,u16 psc);	
+void TIM7_Int_Init(u16 arr,u16 psc);
+void TIM12_CH2_PWM_Init(u16 arr,u16 psc);
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

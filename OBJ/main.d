@@ -88,4 +88,11 @@
 ..\obj\main.o: ..\LWIP\lwip-1.4.1\src\include\lwip/err.h
 ..\obj\main.o: ..\LWIP\lwip-1.4.1\src\include\lwip/pbuf.h
 ..\obj\main.o: ..\LWIP\lwip_app\tcp_server\tcp_server_demo.h
+..\obj\main.o: ..\HARDWARE\Motor\straightmotorcontrol.h
+..\obj\main.o: ..\HARDWARE\ControlModel\check.h
+..\obj\main.o: ..\HARDWARE\ControlModel\controlmodel.h
 ..\obj\main.o: ..\HARDWARE\RS485\rs485.h
+..\obj\main.o: ..\HARDWARE\Encoder\encoder.h
+..\obj\main.o: ..\USER\stm32f4xx_it.h
+..\obj\main.o: ..\HARDWARE\USART3\usart3.h
+..\obj\main.o: ..\HARDWARE\DMA\dma.h

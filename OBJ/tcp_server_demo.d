@@ -60,6 +60,11 @@
 ..\obj\tcp_server_demo.o: ..\UCOSIII\uC-LIB\lib_math.h
 ..\obj\tcp_server_demo.o: ..\UCOSIII\uCOS_CONFIG\app_cfg.h
 ..\obj\tcp_server_demo.o: ..\UCOSIII\UCOS_BSP\bsp.h
+..\obj\tcp_server_demo.o: ..\HARDWARE\Motor\straightmotorcontrol.h
+..\obj\tcp_server_demo.o: ..\SYSTEM\usart\usart.h
+..\obj\tcp_server_demo.o: ..\HARDWARE\ControlModel\check.h
+..\obj\tcp_server_demo.o: ..\HARDWARE\ControlModel\controlmodel.h
+..\obj\tcp_server_demo.o: ..\SYSTEM\delay\delay.h
 ..\obj\tcp_server_demo.o: ..\LWIP\lwip-1.4.1\src\include\lwip/opt.h
 ..\obj\tcp_server_demo.o: ..\LWIP\lwip_app\lwip_comm\lwipopts.h
 ..\obj\tcp_server_demo.o: ..\LWIP\lwip-1.4.1\src\include\lwip/debug.h

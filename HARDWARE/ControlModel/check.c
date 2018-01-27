@@ -28,8 +28,8 @@ uint16_t CalcFieldCRC(uint16_t* pDataArray, uint16_t numberOfWords)
 uint8_t BccCheckSum(uint8_t buf[], uint8_t lenth)
 {
 	uint8_t checksum;
-	
-	for(uint16_t i; i < lenth; i++)
+	uint16_t i;
+	for( i=0; i < lenth; i++)
 	{
 		checksum ^= buf[i];
 	}

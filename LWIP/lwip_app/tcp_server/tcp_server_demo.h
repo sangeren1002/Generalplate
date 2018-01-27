@@ -2,6 +2,7 @@
 #define __TCP_SERVER_DEMO_H
 #include "sys.h"
 #include "includes.h"
+#include "straightmotorcontrol.h"
   
  typedef struct{
 		u8 Head[2];									//帧头	0x88 0x66	

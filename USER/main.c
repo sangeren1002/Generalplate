@@ -20,6 +20,9 @@
 #include "httpd.h"
 #include "tcp_server_demo.h"
 #include "rs485.h"	
+#include "encoder.h"
+#include "usart3.h"
+#include "dma.h"
 
 
 //UCOSIII中以下优先级用户程序不能使用
@@ -109,27 +112,48 @@ void show_address(u8 mode)
 	}	
 }
 
+u8 fun_motor = 0;
+extern uint8_t recv[10];
 int main(void)
 {
 	OS_ERR err;
 	CPU_SR_ALLOC();
-	
+	u8 i,j;
+	u8 rs485ret[4][3]={0};
+	u8 rs485buf2[4][10]={"1AR\r\n","2AR\r\n","3AR\r\n","4AR\r\n"};
 	delay_init(168);       	//延时初始化
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);	//中断分组配置
 	uart_init(115200);    	//串口1初始化
+	usart3_init(115200);
+	MYDMA_Config(DMA2_Stream2,DMA_Channel_4,(u16)&USART1->DR,(u16)recv,10);
 	usmart_dev.init(84); 	//初始化USMART
 	LED_Init();  			//LED初始化
 	KEY_Init();  			//按键初始化
 	LCD_Init();  			//LCD初始化
-    BEEP_Init(); 			//蜂鸣器初始化
-    Adc_Init();  			//ADC1_CH5初始化
-	RS485_Init(115200);		//RS485初始化 115200波特率传输距离为500m
-	Adc_Temperate_Init(); //初始化内部温度传感器
+  BEEP_Init(); 			//蜂鸣器初始化
+//  Adc_Init();  			//ADC1_CH5初始化
+	RS485_Init(9600);		//RS485初始化 115200波特率传输距离为500m
+//	Adc_Temperate_Init(); //初始化内部温度传感器
 	FSMC_SRAM_Init();		//SRAM初始化
+	
 	
 	mymem_init(SRAMIN);  	//初始化内部内存池
 	mymem_init(SRAMEX);  	//初始化外部内存池
 	mymem_init(SRAMCCM); 	//初始化内部内存池
+	
+	for(i=0;i<4;i++)
+	{
+		do{RS485_Send_Data(rs485buf2[i],strlen(rs485buf2[i]));//·¢ËÍ5¸ö×Ö½Ú 	
+		delay_ms(20);		
+//		RS485_Receive_Data(rs485ret[i],&j);
+		}
+		while(strncmp(&RS485_RX_BUF[1],"%",1)!=0);
+	}
+	StraightMotorInit(0x0001);
+	StraightMotorInit(0x0002);
+	StraightMotorInit(0x0003);
+	StraightMotorInit(0x0004);
+	InquireSwerveMotorAngle();
 	
 	POINT_COLOR = RED; 		//红色字体
 	LCD_ShowString(30,30,200,20,16,"Explorer STM32F4");
@@ -139,22 +163,22 @@ int main(void)
 	POINT_COLOR = BLUE; 	//蓝色字体
 	
 	OSInit(&err); 					//UCOSIII初始化
-	while(lwip_comm_init()) 		//lwip初始化
-	{
-		LCD_ShowString(30,110,200,20,16,"Lwip Init failed!"); 	//lwip初始化失败
-		delay_ms(500);
-		LCD_Fill(30,110,230,150,WHITE);
-		delay_ms(500); 
-	}
-	LCD_ShowString(30,110,200,20,16,"Lwip Init Success!"); 		//lwip初始化成功
-//	httpd_init();  												//http初始化
-	while(tcp_server_init()) 									//tcp_server初始化(创建tcp_server线程)
-	{
-		LCD_ShowString(30,150,200,20,16,"TCP Server failed!!"); //tcp服务器创建失败
-		delay_ms(500);
-		LCD_Fill(30,150,230,170,WHITE);
-		delay_ms(500);
-	}
+//	while(lwip_comm_init()) 		//lwip初始化
+//	{
+//		LCD_ShowString(30,110,200,20,16,"Lwip Init failed!"); 	//lwip初始化失败
+//		delay_ms(500);
+//		LCD_Fill(30,110,230,150,WHITE);
+//		delay_ms(500); 
+//	}
+//	LCD_ShowString(30,110,200,20,16,"Lwip Init Success!"); 		//lwip初始化成功
+////	httpd_init();  												//http初始化
+//	while(tcp_server_init()) 									//tcp_server初始化(创建tcp_server线程)
+//	{
+//		LCD_ShowString(30,150,200,20,16,"TCP Server failed!!"); //tcp服务器创建失败
+//		delay_ms(500);
+//		LCD_Fill(30,150,230,170,WHITE);
+//		delay_ms(500);
+//	}
 	OS_CRITICAL_ENTER();//进入临界区
 	//创建开始任务
 	OSTaskCreate((OS_TCB 	* )&StartTaskTCB,		//任务控制块
@@ -270,6 +294,7 @@ void display_task(void *pdata)
 void led_task(void *pdata)
 {
 	OS_ERR err;
+
 	while(1)
 	{
 		LED0 = !LED0;
@@ -279,20 +304,70 @@ void led_task(void *pdata)
 //key任务
 void key_task(void *pdata)
 {
+	OS_ERR err;
+	CPU_SR_ALLOC();
 	u8 key; 
 	u8 i;
-	OS_ERR err;
-	u16 c[7]={0x1103,0x6060,0x0001,0x0300,0x0000,0xc5f4,0x4f4f};
+	u8 rs485buf1[4][15]={"1FL33333\r\n","2FL33333\r\n","3FL-33333\r\n","4FL-33333\r\n"};
+	u8 rs485bufret[4][15]={"1FL-33333\r\n","2FL-33333\r\n","3FL33333\r\n","4FL33333\r\n"};
 	while(1)
 	{
-		key = KEY_Scan(0);
-		if(key==KEY0_PRES) //发送数据
-		{		
-			tcp_server_flag |= LWIP_SEND_DATA; //标记LWIP有数据要发送
-			for(i=0;i<7;i++)
-				printf("%x",c[i]);
-//			printf("%d",b);
+		fun_motor = KEY_Scan(0);	
+		if(fun_motor==WKUP_PRES)		
+		{
+//				InquireSwerveMotorAngle();
+			StraightMotorSetSpeed(0x0001);
+			StraightMotorSetSpeed(0x0002);
+			StraightMotorSetSpeed(0x0003);
+			StraightMotorSetSpeed(0x0004);
 		}
+		if(fun_motor==KEY0_PRES)		
+		{
+
+			StraightMotorStop(0x01);
+			StraightMotorStop(0x02);
+			StraightMotorStop(0x03);
+			StraightMotorStop(0x04);
+
+			for(i=0;i<4;i++)
+			{
+//				do{
+					
+					RS485_Send_Data(rs485bufret[i],strlen(rs485buf1[i]));//·¢ËÍ5¸ö×Ö½Ú 				
+					delay_ms(20);
+//				}while(strncmp(&RS485_RX_BUF[1],"%",1)!=0);
+			}
+			
+			
+		}
+		if(fun_motor==KEY2_PRES)//KEY2°´ÏÂ,·¢ËÍÒ»´ÎÊý¾Ý
+		{
+			StraightMotorStop(0x01);
+			StraightMotorStop(0x02);
+			StraightMotorStop(0x03);
+			StraightMotorStop(0x04);
+			delay_ms(500);
+			for(i=0;i<4;i++)
+			{	
+//				do{
+					RS485_Send_Data(rs485buf1[i],strlen(rs485buf1[i]));//·¢ËÍ5¸ö×Ö½Ú 				
+					delay_ms(20);
+//				}while(strncmp(&RS485_RX_BUF[1],"%",1)!=0);
+			}
+			StraightMotorSetSpeed(0x0001);
+			StraightMotorSetSpeed(0x0002);
+			StraightMotorSetSpeed(0x0003);
+			StraightMotorSetSpeed(0x0004);								
+		}		 
+		if(fun_motor==KEY1_PRES)//KEY0°´ÏÂ,·¢ËÍÒ»´ÎÊý¾Ý
+		{
+			StraightMotorSetSpeed(0x0001);
+			StraightMotorSetSpeed(0x0002);
+			StraightMotorSetSpeed(0x0003);
+			StraightMotorSetSpeed(0x0004);
+										   
+		}	
+
 		OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_HMSM_STRICT,&err); //延时500ms
 	}
 }

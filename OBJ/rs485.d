@@ -37,3 +37,17 @@
 ..\obj\rs485.o: ..\FWLIB\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_fsmc.h
 ..\obj\rs485.o: ..\HARDWARE\RS485\rs485.h
 ..\obj\rs485.o: ..\SYSTEM\delay\delay.h
+..\obj\rs485.o: ..\UCOSIII\uCOS-III\Source\os.h
+..\obj\rs485.o: ..\UCOSIII\uCOS_CONFIG\os_cfg.h
+..\obj\rs485.o: ..\UCOSIII\uC-CPU\ARM-Cortex-M4\RealView\cpu.h
+..\obj\rs485.o: ..\UCOSIII\uC-CPU\cpu_def.h
+..\obj\rs485.o: ..\UCOSIII\uCOS_CONFIG\cpu_cfg.h
+..\obj\rs485.o: ..\UCOSIII\uC-CPU\cpu_core.h
+..\obj\rs485.o: ..\UCOSIII\uC-LIB\lib_def.h
+..\obj\rs485.o: ..\UCOSIII\uC-LIB\lib_mem.h
+..\obj\rs485.o: ..\UCOSIII\uC-CPU\cpu_core.h
+..\obj\rs485.o: ..\UCOSIII\uCOS_CONFIG\lib_cfg.h
+..\obj\rs485.o: ..\UCOSIII\uC-LIB\lib_str.h
+..\obj\rs485.o: ..\UCOSIII\uC-LIB\lib_ascii.h
+..\obj\rs485.o: ..\UCOSIII\uCOS-III\Source\os_type.h
+..\obj\rs485.o: ..\UCOSIII\uCOS-III\Ports\ARM-Cortex-M4\Generic\RealView\os_cpu.h
